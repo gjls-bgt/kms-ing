@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Tematik Anak Ceria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FEF08A;
+            color: #374151;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: #F0FDF4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ================= COVER SECTION ================= */
+        #cover-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #f59e0b, #ea580c);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            z-index: 10;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        #cover-page.hidden {
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        .cover-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .font-kids {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .cover-title {
+            font-size: 36px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            text-shadow: 2px 4px 0px rgba(0,0,0,0.15);
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            color: #fef3c7;
+            margin-bottom: 32px;
+            font-weight: 700;
+        }
+
+        .btn-start {
+            background-color: #fde047;
+            color: #c2410c;
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-start:active { transform: scale(0.95); }
+
+        /* ================= MAIN CONTENT ================= */
+        #main-content {
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .main-title {
+            color: #ea580c;
+            font-size: 28px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .search-container {
+            margin-top: 12px;
+            position: relative;
+            width: 100%;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 48px 12px 20px;
+            font-size: 16px;
+            border: 4px solid #fb923c;
+            border-radius: 50px;
+            outline: none;
+            font-weight: 700;
+            color: #4b5563;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .search-bar:focus { border-color: #ea580c; }
+        .search-icon { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 18px; }
+
+        /* Pilihan Tema (Bisa Digeser) */
+        .tema-section {
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+
+        .tema-title {
+            font-size: 16px;
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tema-title::after {
+            content: "Geser ➔";
+            font-size: 11px;
+            color: #ea580c;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+        .tema-wrapper {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 8px 12px 4px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; 
+            scroll-linecap: mandatory;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; 
+        }
+        
+        .tema-wrapper::-webkit-scrollbar { display: none; }
+
+        .btn-tema {
+            background-color: white;
+            color: #ea580c;
+            border: 3px solid #fb923c;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px 0px #fb923c;
+            transition: all 0.1s ease;
+            scroll-snap-align: start;
+        }
+
+        .btn-tema.active {
+            background-color: #ea580c;
+            color: white;
+            border-color: #ea580c;
+            box-shadow: 0 4px 0px #b45309;
+        }
+
+        .btn-tema:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px transparent;
+        }
+
+        /* Grid Kamus - 2 Kolom */
+        .kamus-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .card {
+            background-color: white;
+            border: 4px solid #34d399; 
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover; /* <--- Bagian ini yang mengatur perilaku gambar */
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: none;
+        }
+
+        .card-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: #6b7280;
+            background-color: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .card-indo { color: #059669; font-size: 16px; margin-bottom: 4px; }
+        .divider { width: 100%; border-top: 2px dashed #e5e7eb; margin: 6px 0; }
+        .card-eng { color: #f97316; font-size: 20px; display: flex; align-items: center; gap: 6px; }
+
+        .btn-audio {
+            background-color: #ffedd5;
+            border: none;
+            padding: 4px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .card-read { font-size: 12px; color: #3b82f6; font-style: italic; font-weight: 700; }
+
+        .not-found { display: none; text-align: center; padding: 40px 16px; width: 100%; grid-column: span 2; }
+        .not-found-icon { font-size: 48px; margin-bottom: 8px; }
+        .not-found-text { font-size: 16px; font-weight: 700; color: #4b5563; }
+
+        footer {
+            background-color: #ea580c;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <div id="cover-page">
+            <div class="cover-icon">📚✨</div>
+            <h1 class="font-kids cover-title">KAMUS BERGAMBAR</h1>
+            <p class="cover-subtitle">Belajar Bahasa Inggris Jadi Seru dan Mudah!</p>
+            <button onclick="bukaKamus()" class="btn-start">Mulai Belajar! 🚀</button>
+        </div>
+
+        <div id="main-content">
+            <header>
+                <h2 onclick="kembaliKeCover()" class="font-kids main-title">✨ Kamus Ceria ✨</h2>
+                <div class="search-container">
+                    <input type="text" id="search-bar" oninput="cariKata()" placeholder="Cari kata (Indo / English)..." class="search-bar">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </header>
+
+            <section class="tema-section">
+                <h3 class="font-kids tema-title">🎯 Pilih Tema:</h3>
+                <div id="tema-container" class="tema-wrapper"></div>
+            </section>
+
+            <main class="kamus-grid" id="kamus-grid"></main>
+
+            <div id="not-found" class="not-found">
+                <p class="not-found-icon">😢</p>
+                <p class="not-found-text">Wah, kata itu belum ada di kamus...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Dibuat dengan ❤️ untuk Anak Pintar © 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        let daftarTema = [];
+        let databaseKamusAll = []; // Menyimpan semua kata dari seluruh tema
+        let temaTerpilih = "Semua";
+
+        function bukaKamus() {
+            document.getElementById('cover-page').classList.add('hidden');
+            muatKonfigurasiTema();
+        }
+
+        function kembaliKeCover() {
+            document.getElementById('cover-page').classList.remove('hidden');
+        }
+
+        // 1. Ambil daftar tema dari daftar_tema.csv
+        async function muatKonfigurasiTema() {
+            try {
+                const response = await fetch('daftar_tema.csv');
+                const dataText = await response.text();
+                const baris = dataText.split('\n');
+                
+                daftarTema = [];
+                for (let i = 1; i < baris.length; i++) {
+                    if (baris[i].trim() === "") continue;
+                    const kolom = baris[i].split(',');
+                    daftarTema.push({
+                        nama: kolom[0].trim(),
+                        file: kolom[1].trim()
+                    });
+                }
+
+                // SORTING OTOMATIS BERDASARKAN ABJAD (A-Z)
+                daftarTema.sort((a, b) => a.nama.localeCompare(b.nama));
+
+                // Muat semua isi file data tema secara paralel
+                await muatSemuaKosakata();
+                
+                tampilkanTombolTema();
+                tampilkanKamus();
+            } catch (error) {
+                console.error("Gagal membaca daftar_tema.csv:", error);
+                alert("Gagal memuat struktur file tema.");
+            }
+        }
+
+        // 2. Muat isi dari masing-masing file CSV secara dinamis
+        async function muatSemuaKosakata() {
+            databaseKamusAll = [];
+            
+            // Loop semua tema yang ada di daftar_tema.csv
+            const promises = daftarTema.map(async (tema) => {
+                try {
+                    const response = await fetch(tema.file);
+                    const dataText = await response.text();
+                    const baris = dataText.split('\n');
+                    
+                    for (let i = 1; i < baris.length; i++) {
+                        if (baris[i].trim() === "") continue;
+                        const kolom = baris[i].split(',');
+                        databaseKamusAll.push({
+                            indonesia: kolom[0].trim(),
+                            inggris: kolom[1].trim(),
+                            caraBaca: kolom[2].trim(),
+                            gambar: kolom[3].trim(),
+                            tema: tema.nama // Menyuntikkan nama tema asal file secara otomatis
+                        });
+                    }
+                } catch (err) {
+                    console.error(`Gagal memuat file: ${tema.file}`, err);
+                }
+            });
+
+            await Promise.all(promises);
+        }
+
+        // 3. Render Tombol Tema yang Sudah Diurutkan A-Z
+        function tampilkanTombolTema() {
+            const temaContainer = document.getElementById('tema-container');
+            temaContainer.innerHTML = '';
+            
+            // Masukkan pilihan "Semua" di awal
+            const semuaPilihan = [{nama: 'Semua'}, ...daftarTema];
+            
+            semuaPilihan.forEach(tema => {
+                const aktifClass = tema.nama === temaTerpilih ? 'active' : '';
+                temaContainer.innerHTML += `
+                    <button onclick="pilihTema('${tema.nama}')" class="btn-tema ${aktifClass}">
+                        ${tema.nama}
+                    </button>
+                `;
+            });
+        }
+
+        function pilihTema(namaTema) {
+            temaTerpilih = namaTema;
+            document.getElementById('search-bar').value = ''; // Reset kotak pencarian
+            tampilkanTombolTema();
+            tampilkanKamus();
+        }
+
+        // 4. Menampilkan Data ke Layar
+        function tampilkanKamus(dataFilter = null) {
+            const grid = document.getElementById('kamus-grid');
+            const notFound = document.getElementById('not-found');
+            
+            let dataTampil = dataFilter || databaseKamusAll;
+            if (!dataFilter && temaTerpilih !== "Semua") {
+                dataTampil = databaseKamusAll.filter(item => item.tema === temaTerpilih);
+            }
+
+            grid.innerHTML = '';
+
+            if (dataTampil.length === 0) {
+                grid.style.display = 'none';
+                notFound.style.display = 'block';
+                return;
+            } else {
+                grid.style.display = 'grid';
+                notFound.style.display = 'none';
+            }
+
+            dataTampil.forEach(item => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <img src="${item.gambar}" alt="${item.indonesia}" class="card-img" onerror="this.src='https://placehold.co/150?text=Gambar'">
+                        <span class="card-tag">${item.tema}</span>
+                        <h3 class="font-kids card-indo">${item.indonesia}</h3>
+                        <div class="divider"></div>
+                        <h2 class="font-kids card-eng">
+                            ${item.inggris}
+                            <button onclick="suaraMisterius('${item.inggris}')" class="btn-audio">🔊</button>
+                        </h2>
+                        <p class="card-read">[${item.caraBaca}]</p>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. Fitur Pencarian Global Lintas Tema
+        function cariKata() {
+            const keyword = document.getElementById('search-bar').value.toLowerCase();
+            temaTerpilih = "Semua"; 
+            tampilkanTombolTema();
+
+            const hasilFilter = databaseKamusAll.filter(item => 
+                item.indonesia.toLowerCase().includes(keyword) || 
+                item.inggris.toLowerCase().includes(keyword)
+            );
+            
+            tampilkanKamus(hasilFilter);
+        }
+
+        // 6. Suara Pengucapan
+        function suaraMisterius(teks) {
+            const ucapan = new SpeechSynthesisUtterance(teks);
+            ucapan.lang = 'en-US';
+            ucapan.rate = 0.85;
+            window.speechSynthesis.speak(ucapan);
+        }
+    </script>
+</body>
+</html>
